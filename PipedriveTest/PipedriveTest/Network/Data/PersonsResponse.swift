@@ -9,7 +9,7 @@ struct Pagination: Codable {
     let start: Int
     let limit: Int
     let hasMore: Bool
-    let nextStart: Int
+    let nextStart: Int?
     
     enum CodingKeys: String, CodingKey {
         case start, limit

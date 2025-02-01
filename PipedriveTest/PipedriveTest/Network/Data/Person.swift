@@ -5,7 +5,7 @@
 //  Created by Dmitrii Gamberov on 27.01.2025.
 //
 
-struct Picture: Codable {
+struct Picture: Codable, Hashable {
     let pictures: [String: String]
     
     func first() -> String? {
@@ -18,13 +18,27 @@ struct Picture: Codable {
     }
 }
 
-struct ContactData: Codable {
+struct ContactData: Codable, Hashable {
     let value: String
     let primary: Bool
     let label: String
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.value = try container.decodeIfPresent(String.self, forKey: .value) ?? ""
+        self.primary = try container.decodeIfPresent(Bool.self, forKey: .primary) ?? false
+        self.label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    }
+    
+    init(value: String, primary: Bool, label: String) {
+        self.value = value
+        self.primary = primary
+        self.label = label
+    }
 }
 
-struct Person: Codable, Identifiable {
+struct Person: Codable, Identifiable, Equatable, Hashable {
+    
     let id: Int
     let name: String
     let firstName: String
@@ -34,15 +48,15 @@ struct Person: Codable, Identifiable {
     let ccEmail: String
     let picture: Picture
     
-    let phone: [ContactData?]
-    let email: [ContactData?]
+    let phone: [ContactData?]?
+    let email: [ContactData?]?
     
     var phones: [ContactData] {
-        phone.compactMap({ $0 })
+        phone?.compactMap({ $0 }) ?? []
     }
     
     var emails: [ContactData] {
-        email.compactMap({ $0 })
+        email?.compactMap({ $0 }) ?? []
     }
     
     var organizationDataAvailable: Bool {
@@ -78,6 +92,10 @@ struct Person: Codable, Identifiable {
         self.picture = picture
         self.phone = phone
         self.email = email
+    }
+    
+    static func == (lhs: Person, rhs: Person) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

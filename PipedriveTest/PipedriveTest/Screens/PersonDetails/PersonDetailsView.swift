@@ -9,19 +9,13 @@ import SwiftUI
 
 struct PersonDetailsView: View {
     @Environment(\.openURL) var openURL
-    
     var person: Person
     
     var body: some View {
         ScrollView(.vertical) {
             VStack(alignment: .center, spacing: 16) {
                 picturesView
-                Text(person.firstName)
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                Text(person.lastName)
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
+                nameView
                 if person.organizationDataAvailable {
                     organizationView
                 }
@@ -38,6 +32,23 @@ struct PersonDetailsView: View {
             return EmptyView()
         }
         return PicturesView(urls: urls)
+    }
+    
+    var nameView: some View {
+        VStack(alignment: .center, spacing: 16) {
+            if person.firstName.isEmpty || person.lastName.isEmpty {
+                Text(person.name)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
+            } else {
+                Text(person.firstName)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
+                Text(person.lastName)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
+            }
+        }
     }
     
     var organizationView: some View {
