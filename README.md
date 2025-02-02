@@ -1,6 +1,11 @@
 # Pipedrive test task
 
-Unfortunately, due to time constraints, this code appears to be somewhat unfinished. 
+Unfortunately, due to lack of time, this code is kind of unfinished.
+Some points that I want to change and improve:
+Add better error handling, for example support of localizedDescription for custom errors.
+Add UI indicator for not available network status.
+Add proper image handling, most probably just use some library, like Kingfisher.
+
 While working on such a project, I would like to add also the following features: connect a database for storing data regardless of the cache's lifetime and add tests. 
 Additionally, for user convenience, I would like to include the ability to search, add custom photos and edit person data. And improve UI of course, this UI seems to be not so nice and convinient.
 
