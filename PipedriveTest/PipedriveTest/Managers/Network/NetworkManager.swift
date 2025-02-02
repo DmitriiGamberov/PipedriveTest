@@ -6,9 +6,21 @@
 //
 
 import Foundation
+import Network
 
 final class NetworkManager {
     static let shared = NetworkManager()
+    
+    private var monitor = NWPathMonitor()
+    private var currentNetworkStatus: NWPath.Status {
+        get {
+            return monitor.currentPath.status
+        }
+    }
+
+    init() {
+        monitor.start(queue: DispatchQueue.global(qos: .background))
+    }
     
     func request<T: Codable>(type: T.Type, urlString: String, parameters: [String: String]) async throws -> T {
         guard let url = URL(string: urlString) else {
@@ -30,6 +42,12 @@ final class NetworkManager {
         var request = URLRequest(url: fullURL)
         request.httpMethod = "GET"
         request.addValue("c2ca966a662bf28b88df11a9b0a084d10d20ef2c", forHTTPHeaderField: "x-api-token")
+        
+        if currentNetworkStatus == .satisfied {
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        } else {
+            request.cachePolicy = .returnCacheDataDontLoad
+        }
              
         let (data, response) = try await URLSession.shared.data(for: request)
         
